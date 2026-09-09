@@ -65,7 +65,13 @@ body { min-height: 100dvh; }
 .scrim {
   position: absolute; inset: 0; z-index: 2;
   background: linear-gradient(to bottom,
-    rgba(33,18,16,0) 0%, rgba(33,18,16,0) 52%,
+    /* short white fade so the photo meets the band instead of butting against it */
+    rgba(255,255,255,.92) 0%,
+    rgba(255,255,255,.42) 3.5%,
+    rgba(255,255,255,.12) 8%,
+    rgba(255,255,255,0) 13%,
+    /* and the existing fade down into the card */
+    rgba(33,18,16,0) 54%,
     rgba(33,18,16,.42) 78%, rgba(33,18,16,.90) 95%, #211210 100%);
 }
 .glow {
@@ -74,25 +80,16 @@ body { min-height: 100dvh; }
   pointer-events: none;
 }
 
-/* An angled white panel: the colour lockup gets the light ground it needs
-   without turning a whole strip of the card white. The red edges come from
-   borders on a skewed box, so they stay crisp at any width. */
+/* A thin white band: the colour lockup needs a light ground, and a shallow
+   band gives it one without taking much of the card. */
 .brandbar {
-  display: flex; align-items: stretch; justify-content: center;
-  height: 104px; background: var(--bg);
-  border-bottom: 1px solid var(--hair);
-  overflow: hidden;
-}
-.lockup-panel {
   display: flex; align-items: center; justify-content: center;
-  padding: 0 44px; background: #FFFFFF;
-  border-left: 3px solid var(--red);
-  border-right: 3px solid var(--red);
-  transform: skewX(-14deg);
+  padding: 13px 20px 12px;
+  background: #FFFFFF;
+  border-bottom: 2px solid var(--market);
 }
-/* counter-skew so the logo itself stays upright */
-.lockup-panel .lockup { transform: skewX(14deg); }
-.lockup { position: relative; z-index: 1; width: 132px; height: auto; display: block; flex: none; }
+
+.lockup { width: 124px; height: auto; display: block; flex: none; }
 
 .nameplate { position: absolute; z-index: 3; left: 0; right: 0; bottom: 0; padding: 0 20px 18px; display: flex; flex-direction: column; }
 .identity { padding: 22px 20px 2px; display: flex; flex-direction: column; }
