@@ -130,6 +130,55 @@ body { min-height: 100dvh; }
 .record .v { word-break: break-word; font-variant-numeric: tabular-nums; }
 .record .v a { text-decoration: none; border-bottom: 1px solid rgba(198,194,156,.45); }
 
+/* ---------- client logo carousel ---------- */
+/* Vendor logos are almost always dark-on-transparent, so each one gets a white
+   tile. That keeps brand colours correct and echoes the white header band. */
+.logos {
+  padding: 18px 0 20px;
+  border-bottom: 1px solid var(--hair);
+}
+.logos-head {
+  font-size: 9px; font-weight: 900; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--gold-d);
+  text-align: center; padding: 0 20px 14px;
+}
+.logos-viewport {
+  overflow: hidden;
+  /* soften both edges so tiles enter and leave rather than being chopped */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+          mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+}
+.logos-track {
+  display: flex; align-items: center; gap: 10px; width: max-content;
+  padding-left: 10px;
+  animation-name: logo-scroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+.logos-viewport:hover .logos-track,
+.logos-viewport:focus-within .logos-track { animation-play-state: paused; }
+
+@keyframes logo-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.logo-tile {
+  flex: none; height: 54px; min-width: 96px;
+  display: flex; align-items: center; justify-content: center;
+  background: #FFFFFF; border-radius: 5px; padding: 9px 14px;
+}
+.logo-tile img {
+  max-height: 100%; max-width: 118px; width: auto; height: auto;
+  object-fit: contain; display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logos-track { animation: none; }
+  /* still reachable by swiping when it cannot animate */
+  .logos-viewport { overflow-x: auto; }
+}
+
 /* ---------- event band ---------- */
 .band {
   display: flex; align-items: center; gap: 13px; padding: 15px 20px;

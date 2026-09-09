@@ -22,7 +22,9 @@
       "Office Address",
       "Zoho extra",
       "Landing Page Descriptor",
-      "Landing Page URL"
+      "Landing Page URL",
+      "Logo Title",
+      "Logo Carousel"
     ],
     [
       "Y",
@@ -45,7 +47,9 @@
       "Level 15, Menara Symphony, 5 Jalan Prof Khoo Kay Kim, 46200 Petaling Jaya, Selangor",
       "",
       "Latest Report\nPhilippines Cybersecurity Outlook 2026",
-      "https://aibp.sg/reports/ph-cybersecurity"
+      "https://aibp.sg/reports/ph-cybersecurity",
+      "",
+      ""
     ],
     [
       "Y",
@@ -63,6 +67,8 @@
       "Jakarta",
       "AIBP Marketing",
       "2025-10-27",
+      "",
+      "",
       "",
       "",
       "",
@@ -91,6 +97,8 @@
       "8 Eu Tong Sen Street, #24-92, The Central, Singapore 059818",
       "",
       "",
+      "",
+      "",
       ""
     ],
     [
@@ -114,7 +122,16 @@
       "",
       "",
       "",
+      "",
+      "",
       ""
+    ]
+  ],
+  "logos": [
+    [
+      "Name",
+      "Theme",
+      "Photo URL"
     ]
   ]
 }

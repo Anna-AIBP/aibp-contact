@@ -107,6 +107,26 @@ export default async function CardPage({ params }) {
         {p.officeAddress ? <Row k="Address" v={p.officeAddress} /> : null}
       </div>
 
+      {p.logos && p.logos.length ? (
+        <section className="logos">
+          <div className="logos-head">{p.logoTitle}</div>
+          <div className="logos-viewport">
+            {/* the list is rendered twice so the loop can translate -50% and
+                land exactly where it started, with no visible jump */}
+            <div
+              className="logos-track"
+              style={{ animationDuration: `${Math.max(16, p.logos.length * 3.4)}s` }}
+            >
+              {[...p.logos, ...p.logos].map((l, i) => (
+                <span className="logo-tile" key={`${l.url}-${i}`}>
+                  <img src={l.url} alt={l.name || ''} loading="lazy" />
+                </span>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       {hasLanding ? (
         <a className="band" href={p.landingUrl} rel="noopener">
           <div className="bar" />
