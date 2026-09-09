@@ -35,31 +35,32 @@ export default async function CardPage({ params }) {
 
   return (
     <main className="card" style={{ '--market': accent }}>
-      <div className={`hero${p.photo ? '' : ' no-photo'}`}>
-        <div className="shot">
-          {p.photo ? (
+      <div className="brandbar">
+        <img className="lockup" src="/logo-white.png" alt="AIBP by Industry Platform" />
+        {p.basedIn ? <div className="market-chip">{p.basedIn}</div> : null}
+      </div>
+
+      {p.photo ? (
+        <div className="hero">
+          <div className="shot">
             <img src={p.photo} alt={p.displayName} />
-          ) : (
-            <div className="shot-fallback" aria-hidden="true">
-              <span>{(p.firstName || p.displayName || '?').trim().charAt(0)}{(p.lastName || '').trim().charAt(0)}</span>
-            </div>
-          )}
+          </div>
+          <div className="scrim" />
+          <div className="nameplate">
+            <div className="rule" />
+            <h1 className="name">{p.displayName}</h1>
+            {p.jobTitle ? <div className="role">{p.jobTitle}</div> : null}
+            {metaLine ? <div className="meta">{metaLine}</div> : null}
+          </div>
         </div>
-        <div className="glow" />
-        <div className="scrim" />
-
-        <div className="toprow">
-          <img className="lockup" src="/logo-white.png" alt="AIBP by Industry Platform" />
-          {p.basedIn ? <div className="market-chip">{p.basedIn}</div> : null}
-        </div>
-
-        <div className="nameplate">
+      ) : (
+        <div className="identity">
           <div className="rule" />
           <h1 className="name">{p.displayName}</h1>
           {p.jobTitle ? <div className="role">{p.jobTitle}</div> : null}
           {metaLine ? <div className="meta">{metaLine}</div> : null}
         </div>
-      </div>
+      )}
 
       <div className="actions">
         <a className="btn btn-save" href={`/${p.slug}/vcard`} download={`${p.slug}.vcf`}>
@@ -104,6 +105,7 @@ export default async function CardPage({ params }) {
       </a>
 
       <div className="about">
+        <div className="about-label">About AIBP</div>
         <p className="desc">{COMPANY.blurb}</p>
         <div className="pillars">{COMPANY.pillars}</div>
         <div className="legal">{COMPANY.legalName}</div>

@@ -41,14 +41,14 @@ body { min-height: 100dvh; }
 
 /* ---------- hero ---------- */
 .hero { position: relative; isolation: isolate; }
-.shot { aspect-ratio: 1 / 1.12; width: 100%; position: relative; overflow: hidden; background: #4A2C22; }
-.shot img { width: 100%; height: 100%; object-fit: cover; object-position: center 22%; display: block; }
+.shot { aspect-ratio: 1 / 1; width: 100%; position: relative; overflow: hidden; background: #4A2C22; }
+.shot img { width: 100%; height: 100%; object-fit: cover; object-position: center 28%; display: block; }
 /* Duotone unifier: pulls studio headshots and cropped event photos into one
    warm register so the set reads as a single company. */
 .shot::after {
   content: ""; position: absolute; inset: 0;
   background: linear-gradient(155deg, #6B3A2A 0%, #2E1A15 62%, #211210 100%);
-  mix-blend-mode: color; opacity: .82; pointer-events: none;
+  mix-blend-mode: color; opacity: .38; pointer-events: none;
 }
 .shot-fallback {
   width: 100%; height: 100%; display: grid; place-items: center;
@@ -61,10 +61,9 @@ body { min-height: 100dvh; }
 
 /* No headshot in column Q: collapse the portrait well so the card opens on the
    name rather than on a large empty frame. */
-.hero.no-photo .shot { aspect-ratio: 16 / 9; }
+.hero.no-photo .shot { aspect-ratio: auto; height: 88px; }
 .hero.no-photo .shot::after { opacity: 0; }
-.hero.no-photo .shot-fallback { place-items: start end; padding: 14px 20px 0 0; }
-.hero.no-photo .shot-fallback span { font-size: 64px; color: rgba(198,194,156,.14); }
+.hero.no-photo .shot-fallback span { display: none; }
 .hero.no-photo .scrim {
   background: linear-gradient(to bottom,
     rgba(33,18,16,.55) 0%, rgba(33,18,16,.35) 40%,
@@ -73,8 +72,8 @@ body { min-height: 100dvh; }
 .scrim {
   position: absolute; inset: 0; z-index: 2;
   background: linear-gradient(to bottom,
-    rgba(33,18,16,.72) 0%, rgba(33,18,16,.06) 30%,
-    rgba(33,18,16,.62) 62%, rgba(33,18,16,.96) 86%, #211210 100%);
+    rgba(33,18,16,.10) 0%, rgba(33,18,16,0) 38%,
+    rgba(33,18,16,.55) 72%, rgba(33,18,16,.94) 93%, #211210 100%);
 }
 .glow {
   position: absolute; z-index: 1; inset: auto 0 -8% 0; height: 62%;
@@ -82,10 +81,10 @@ body { min-height: 100dvh; }
   pointer-events: none;
 }
 
-.toprow {
-  position: absolute; z-index: 3; top: 0; left: 0; right: 0;
-  display: flex; align-items: flex-start; justify-content: space-between;
-  gap: 12px; padding: 17px 20px;
+.brandbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 16px 20px 15px;
+  border-bottom: 1px solid var(--hair);
 }
 .lockup { width: 118px; height: auto; display: block; flex: none; filter: drop-shadow(0 1px 3px rgba(0,0,0,.45)); }
 .market-chip {
@@ -97,10 +96,11 @@ body { min-height: 100dvh; }
 .market-chip::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--market); flex: none; }
 
 .nameplate { position: absolute; z-index: 3; left: 0; right: 0; bottom: 0; padding: 0 20px 18px; display: flex; flex-direction: column; }
-.nameplate .rule { width: 34px; height: 2px; background: var(--market); margin-bottom: 13px; }
-.nameplate .name { font-size: 31px; font-weight: 900; line-height: 1.02; letter-spacing: -.028em; text-wrap: balance; margin: 0; }
-.nameplate .role { font-weight: 700; font-size: 13.5px; color: var(--gold-l); margin-top: 7px; }
-.nameplate .meta { font-size: 9.5px; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; color: var(--mute); margin-top: 7px; }
+.identity { padding: 22px 20px 2px; display: flex; flex-direction: column; }
+.nameplate .rule, .identity .rule { width: 34px; height: 2px; background: var(--market); margin-bottom: 14px; }
+.nameplate .name, .identity .name { font-size: 31px; font-weight: 900; line-height: 1.02; letter-spacing: -.028em; text-wrap: balance; margin: 0; }
+.nameplate .role, .identity .role { font-weight: 700; font-size: 15px; color: var(--gold-l); margin-top: 8px; }
+.nameplate .meta, .identity .meta { font-size: 9.5px; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; color: var(--mute); margin-top: 8px; }
 
 /* ---------- actions ---------- */
 .actions { padding: 18px 20px 4px; display: flex; flex-direction: column; gap: 9px; }
@@ -151,13 +151,20 @@ body { min-height: 100dvh; }
 .band .arrow { margin-left: auto; color: var(--gold-l); flex: none; font-size: 17px; }
 
 /* ---------- about ---------- */
-.about { padding: 18px 20px; display: flex; flex-direction: column; gap: 11px; }
-.about .desc {
-  font-family: "Crimson Pro", Georgia, serif; font-size: 14px; line-height: 1.52;
-  color: rgba(242,236,230,.84); margin: 0;
+.about {
+  padding: 20px 22px; display: flex; flex-direction: column;
+  align-items: center; text-align: center; gap: 9px;
 }
-.pillars { font-size: 9.5px; font-weight: 900; letter-spacing: .22em; text-transform: uppercase; color: var(--gold-d); }
-.about .legal { font-size: 10.5px; letter-spacing: .05em; color: var(--mute); }
+.about-label {
+  font-size: 9px; font-weight: 900; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--gold-d);
+}
+.about .desc {
+  font-family: "Crimson Pro", Georgia, serif; font-size: 11.5px; line-height: 1.55;
+  color: rgba(242,236,230,.5); margin: 0;
+}
+.pillars { font-size: 8.5px; font-weight: 900; letter-spacing: .22em; text-transform: uppercase; color: rgba(168,165,131,.72); }
+.about .legal { font-size: 9.5px; letter-spacing: .05em; color: rgba(174,159,149,.65); }
 
 /* ---------- foot ---------- */
 .foot {
