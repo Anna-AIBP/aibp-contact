@@ -49,7 +49,9 @@ export default async function CardPage({ params }) {
   return (
     <main className="card" style={{ '--market': accent }}>
       <div className="brandbar">
-        <img className="lockup" src="/logo-colour.png" alt="AIBP by Industry Platform" />
+        <span className="lockup-panel">
+          <img className="lockup" src="/logo-colour.png" alt="AIBP by Industry Platform" />
+        </span>
       </div>
 
       {p.photo ? (
