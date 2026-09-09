@@ -24,6 +24,10 @@ export async function generateMetadata({ params }) {
 
 const digits = (s) => String(s || '').replace(/[^\d]/g, '');
 
+function hostOf(url) {
+  try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return url || ''; }
+}
+
 export default async function CardPage({ params }) {
   const { slug } = await params;
   const p = await getPerson(slug);
@@ -32,6 +36,15 @@ export default async function CardPage({ params }) {
   const accent = marketColour(p.basedIn);
   const wa = digits(p.mobile);
   const metaLine = [p.team, p.basedIn].filter(Boolean).join(' · ');
+
+  // Column U: line 1 is the label, the rest is the headline.
+  const landingLines = String(p.landingDescriptor || '')
+    .split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  const hasLanding = Boolean(p.landingUrl);
+  const landingLabel = landingLines.length > 1 ? landingLines[0] : '';
+  const landingHeadline =
+    landingLines.length > 1 ? landingLines.slice(1).join(' ')
+      : landingLines[0] || hostOf(p.landingUrl);
 
   return (
     <main className="card" style={{ '--market': accent }}>
@@ -95,14 +108,16 @@ export default async function CardPage({ params }) {
         {p.officeAddress ? <Row k="Address" v={p.officeAddress} /> : null}
       </div>
 
-      <a className="band" href={COMPANY.upcomingUrl}>
-        <div className="bar" />
-        <div className="txt">
-          <div className="lbl">Upcoming</div>
-          <div className="hl">Conferences &amp; Exhibitions across ASEAN</div>
-        </div>
-        <div className="arrow" aria-hidden="true">&rarr;</div>
-      </a>
+      {hasLanding ? (
+        <a className="band" href={p.landingUrl} rel="noopener">
+          <div className="bar" />
+          <div className="txt">
+            {landingLabel ? <div className="lbl">{landingLabel}</div> : null}
+            <div className="hl">{landingHeadline}</div>
+          </div>
+          <div className="arrow" aria-hidden="true">&rarr;</div>
+        </a>
+      ) : null}
 
       <div className="about">
         <div className="about-label">About AIBP</div>
