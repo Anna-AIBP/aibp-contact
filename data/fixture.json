@@ -1,0 +1,10 @@
+{
+  "_comment": "Offline fallback mirroring the roster sheet's shape. Used only when Google credentials are absent.",
+  "values": [
+    ["Include?","Slug","Card URL","Display Name","First Name","Last Name","Job Title (FILL)","Team","Email","Mobile (FILL)","Office Phone","LinkedIn URL (FILL)","Based In (verify)","Zoho Role (ref only)","Zoho Record Last Modified","Notes","Photo","Office Address"],
+    ["Y","","","Aizat Sultan","Aizat","Sultan","Head of Marketing","Marketing","aizat@industry-platform.com","+60 12-394 1438","","","Malaysia","AIBP Marketing","2025-06-18","","","Level 15, Menara Symphony, 5 Jalan Prof Khoo Kay Kim, 46200 Petaling Jaya, Selangor"],
+    ["Y","","","Clare Christy Widjajakusuma","Clare Christy","Widjajakusuma","","Marketing","clare@industry-platform.com","","","","Jakarta","AIBP Marketing","2025-10-27","","",""],
+    ["Y","","","Sue Yuin Ho","Sue Yuin","Ho","","Sales","sueyuin@industry-platform.com","83187737","","","Singapore","AIBP Sales Director","2025-10-27","","","8 Eu Tong Sen Street, #24-92, The Central, Singapore 059818"],
+    ["VERIFY","","","Priya Lakshmi Padkuna Lingam","Priya","Lakshmi Padkuna Lingam","","Sales","priya@industry-platform.com","","","","Singapore","AIBP Sales","2023-11-15","should not publish","",""]
+  ]
+}
