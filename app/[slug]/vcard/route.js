@@ -1,7 +1,7 @@
 import { getPerson } from '../../../lib/sheet.js';
 import { buildVCard, fetchPhotoBase64 } from '../../../lib/vcard.js';
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export async function GET(_req, { params }) {
   const { slug } = await params;

@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import { getRoster, getPerson } from '../../lib/sheet.js';
 import { COMPANY, marketColour } from '../../lib/company.js';
 
-export const revalidate = 3600;   // self-heals hourly even if the deploy hook misfires
+export const revalidate = 60;    // sheet edits appear within a minute
 export const dynamicParams = true; // a new sheet row resolves on first request
 
 export async function generateStaticParams() {

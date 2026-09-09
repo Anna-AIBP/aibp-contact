@@ -10,10 +10,17 @@ page per published person, and generates that person's `.vcf` and QR code on
 demand. Nobody edits this repo to change a phone number.
 
 ```
-Google Sheet ──> lib/sheet.js ──> /[slug]        the card
-                                  /[slug]/vcard  the .vcf download
-                                  /[slug]/qr     the QR code (SVG / PNG)
+Google Sheet
+   │  Apps Script Web App (scripts/roster-webapp.gs) serves the rows as JSON
+   ▼
+lib/sheet.js ──> /[slug]        the card
+                 /[slug]/vcard  the .vcf download
+                 /[slug]/qr     the QR code (SVG / PNG)
 ```
+
+There is no service account and no Google Cloud project. The Apps Script runs
+as the sheet owner, so the sheet needs no extra sharing — which also means
+there is nothing for a Workspace admin policy to block.
 
 ## Sheet contract
 
@@ -52,27 +59,39 @@ Adding a row with an email and `Y` in column A creates a live page. No other ste
 
 ## Environment
 
-Copy `.env.example` to `.env.local`. With no credentials set, the site serves
-`data/fixture.json` so `npm run dev` works on a fresh clone.
+Copy `.env.example` to `.env.local`. With neither `ROSTER_API_*` variable set,
+the site serves `data/fixture.json`, so a fresh clone runs with no setup.
 
 | Variable | Where it comes from |
 |---|---|
-| `GOOGLE_SHEET_ID` | The sheet URL. |
-| `GOOGLE_SERVICE_ACCOUNT_EMAIL` | `client_email` in the service account JSON. |
-| `GOOGLE_PRIVATE_KEY` | `private_key` in the same file, quoted, `\n` sequences left as-is. |
+| `ROSTER_API_URL` | The Apps Script Web App `/exec` URL. |
+| `ROSTER_API_TOKEN` | Must match the `ROSTER_API_TOKEN` script property on that project. |
 | `NEXT_PUBLIC_SITE_URL` | `https://contact.aibp.sg` |
 
-The service account needs **Viewer** access on the sheet — share it with the
-service account email like any other collaborator.
+Full setup instructions live in the header comment of `scripts/roster-webapp.gs`.
 
 ## Sync
 
-Two layers, deliberately:
+Pages revalidate every 60 seconds, so a sheet edit appears within a minute
+without anyone deploying anything. `dynamicParams` is on, so a person added to
+the sheet after the last build resolves on first request rather than 404ing.
 
-1. **ISR revalidation, hourly.** The site self-heals even if everything else fails.
-2. **Apps Script deploy hook** (`scripts/sync-trigger.gs`) for near-instant
-   updates on edit, debounced so a person filling in a row doesn't fire twenty
-   deploys.
+If you ever need it truly instant, lower `revalidate` in `app/[slug]/page.js`
+or add a Vercel deploy hook fired from an on-edit Apps Script trigger. Neither
+is necessary at this roster size.
+
+### A note on failure modes
+
+Apps Script cannot set an HTTP status code — a web app always returns 200, even
+when it refuses you. So errors travel in the response body and `lib/sheet.js`
+checks for an `error` key. Without that check, a wrong token would look like a
+successful response containing no people, and the site would quietly publish an
+empty roster instead of failing the build.
+
+### If the Web App URL leaks
+
+Change `ROSTER_API_TOKEN` in Script Properties. The old URL stops working
+immediately. Update the same value in Vercel and redeploy.
 
 ## QR codes
 
