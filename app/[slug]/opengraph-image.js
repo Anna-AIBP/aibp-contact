@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises';
 import { ImageResponse } from 'next/og';
 import { getPerson } from '../../lib/sheet.js';
 
@@ -11,10 +12,11 @@ const INK = '#3C3838';
 const RED = '#B42024';
 
 // The lockup is colocated with this route so the bundler ships it into the
-// function; reading it from /public would not survive the build.
+// function; reading it from /public would not survive the build. It has to be
+// read from disk, not fetched: on the node runtime import.meta.url is a file://
+// URL and fetch() refuses those, which is what returned 500 in production.
 async function lockup() {
-  const res = await fetch(new URL('./logo-colour.png', import.meta.url));
-  return res.arrayBuffer();
+  return readFile(new URL('./logo-colour.png', import.meta.url));
 }
 
 // Satori cannot fetch remote images itself, so the headshot is inlined. A
@@ -65,12 +67,11 @@ export default async function Image({ params }) {
     lato(),
   ]);
 
-  const logoSrc = `data:image/png;base64,${Buffer.from(logo).toString('base64')}`;
+  const logoSrc = `data:image/png;base64,${logo.toString('base64')}`;
   const name = p?.displayName || 'AIBP';
   const role = p?.jobTitle || '';
 
-  return new ImageResponse(
-    (
+  const card = (
       <div
         style={{
           width: '100%', height: '100%', background: '#FFFFFF', display: 'flex',
@@ -108,7 +109,20 @@ export default async function Image({ params }) {
 
         <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 10, background: RED }} />
       </div>
-    ),
-    { ...size, fonts: fonts.length ? fonts : undefined }
   );
+
+  try {
+    return new ImageResponse(card, { ...size, fonts: fonts.length ? fonts : undefined });
+  } catch {
+    // Last resort: the name on white. A plain card beats a broken preview.
+    return new ImageResponse(
+      (
+        <div style={{
+          width: '100%', height: '100%', background: '#FFFFFF', display: 'flex',
+          alignItems: 'center', justifyContent: 'center', fontSize: 56, color: INK,
+        }}>{name}</div>
+      ),
+      size
+    );
+  }
 }
