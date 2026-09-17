@@ -54,11 +54,11 @@ body { min-height: 100dvh; }
 .hero { position: relative; isolation: isolate; }
 /* Headshots are square; the card shows a 16:10 band of one. Which band is set
    per person by "Photo Position" in the sheet — 0% is the top of the photo,
-   50% centre. Without it, centre. */
+   50% centre. Without it, 25%, which suits a standard portrait. */
 .shot { aspect-ratio: 16 / 10; width: 100%; position: relative; overflow: hidden; background: #4A2C22; }
 .shot img {
   width: 100%; height: 100%; object-fit: cover; display: block;
-  object-position: center var(--photo-pos, 50%);
+  object-position: center var(--photo-pos, 25%);
 }
 .shot-fallback {
   width: 100%; height: 100%; display: grid; place-items: center;
