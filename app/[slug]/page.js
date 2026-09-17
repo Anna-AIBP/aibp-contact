@@ -18,7 +18,11 @@ export async function generateMetadata({ params }) {
   return {
     title: p.displayName,
     description: `${title}, AIBP.`,
-    openGraph: { title, description: COMPANY.blurb.slice(0, 180), images: p.photo ? [p.photo] : [] },
+    // No images key: opengraph-image.js in this folder generates the card and
+    // Next wires the tags up. Setting images here would override it with the
+    // bare headshot, which is what we are moving away from.
+    openGraph: { title, description: COMPANY.blurb.slice(0, 180) },
+    twitter: { card: 'summary_large_image', title, description: COMPANY.blurb.slice(0, 180) },
   };
 }
 
