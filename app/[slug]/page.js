@@ -47,7 +47,7 @@ export default async function CardPage({ params }) {
       : landingLines[0] || hostOf(p.landingUrl);
 
   return (
-    <main className="card" style={{ '--market': accent }}>
+    <main className="card" style={{ '--market': accent, '--photo-pos': p.photoPosition }}>
       <div className="brandbar">
         <img className="lockup" src="/logo-colour.png" alt="AIBP by Industry Platform" />
       </div>
@@ -56,8 +56,8 @@ export default async function CardPage({ params }) {
         <div className="hero">
           <div className="shot">
             <img src={p.photo} alt={p.displayName} />
+            <div className="scrim" />
           </div>
-          <div className="scrim" />
           <div className="nameplate">
             <div className="rule" />
             <h1 className="name">{p.displayName}</h1>

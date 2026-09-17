@@ -27,9 +27,20 @@ a { color: inherit; }
 
 /* ---------- card shell ---------- */
 .card {
+  position: relative; isolation: isolate;
   width: 100%; max-width: 440px; margin: 0 auto;
   background: var(--bg); display: flex; flex-direction: column;
 }
+/* The ASEAN batik, stripped of colour and reduced to a relief map. soft-light
+   over the base colour reads as a blind emboss: visible on a good screen,
+   invisible in a photocopy. Buttons paint their own solid ground on top. */
+.card::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  background-image: url(/batik-emboss.png);
+  background-size: 380px auto; background-repeat: repeat;
+  mix-blend-mode: soft-light; opacity: .9;
+}
+.card > * { position: relative; z-index: 1; }
 body { min-height: 100dvh; }
 @media (min-width: 520px) {
   body { background: #171009; padding: 32px 16px; }
@@ -41,8 +52,14 @@ body { min-height: 100dvh; }
 
 /* ---------- hero ---------- */
 .hero { position: relative; isolation: isolate; }
-.shot { aspect-ratio: 1 / 1; width: 100%; position: relative; overflow: hidden; background: #4A2C22; }
-.shot img { width: 100%; height: 100%; object-fit: cover; object-position: center 28%; display: block; }
+/* Headshots are square; the card shows a 16:10 band of one. Which band is set
+   per person by "Photo Position" in the sheet — 0% is the top of the photo,
+   50% centre. Without it, centre. */
+.shot { aspect-ratio: 16 / 10; width: 100%; position: relative; overflow: hidden; background: #4A2C22; }
+.shot img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  object-position: center var(--photo-pos, 50%);
+}
 .shot-fallback {
   width: 100%; height: 100%; display: grid; place-items: center;
   background: linear-gradient(155deg, #4A2C22, #2B1A15);
@@ -63,16 +80,20 @@ body { min-height: 100dvh; }
     rgba(33,18,16,.88) 78%, #211210 100%);
 }
 .scrim {
-  position: absolute; inset: 0; z-index: 2;
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
   background: linear-gradient(to bottom,
-    /* short white fade so the photo meets the band instead of butting against it */
+    /* dissolve into the white band rather than butting against it */
     rgba(255,255,255,.92) 0%,
-    rgba(255,255,255,.42) 3.5%,
-    rgba(255,255,255,.12) 8%,
-    rgba(255,255,255,0) 13%,
-    /* and the existing fade down into the card */
-    rgba(33,18,16,0) 54%,
-    rgba(33,18,16,.42) 78%, rgba(33,18,16,.90) 95%, #211210 100%);
+    rgba(255,255,255,.66) 5%,
+    rgba(255,255,255,.26) 13%,
+    rgba(255,255,255,0) 22%,
+    /* clear through the face, then down into the card over the bottom 40% */
+    rgba(33,18,16,0) 60%,
+    rgba(33,18,16,.10) 70%,
+    rgba(33,18,16,.30) 81%,
+    rgba(33,18,16,.62) 90%,
+    rgba(33,18,16,.88) 96%,
+    #211210 100%);
 }
 .glow {
   position: absolute; z-index: 1; inset: auto 0 -8% 0; height: 62%;
@@ -84,21 +105,23 @@ body { min-height: 100dvh; }
    band gives it one without taking much of the card. */
 .brandbar {
   display: flex; align-items: center; justify-content: center;
-  padding: 13px 20px 12px;
+  padding: 15px 20px 7px;
   background: #FFFFFF;
 }
 
-.lockup { width: 124px; height: auto; display: block; flex: none; }
+.lockup { width: 116px; height: auto; display: block; flex: none; }
 
-.nameplate { position: absolute; z-index: 3; left: 0; right: 0; bottom: 0; padding: 0 20px 18px; display: flex; flex-direction: column; }
-.identity { padding: 22px 20px 2px; display: flex; flex-direction: column; }
+/* Not over the face: the block starts below the chin, overlapping only the
+   last strip of photo, where the scrim has already gone solid. */
+.nameplate { position: relative; z-index: 3; margin-top: -50px; padding: 0 24px 0; display: flex; flex-direction: column; }
+.identity { padding: 22px 24px 2px; display: flex; flex-direction: column; }
 .nameplate .rule, .identity .rule { width: 34px; height: 2px; background: var(--market); margin-bottom: 14px; }
-.nameplate .name, .identity .name { font-size: 31px; font-weight: 900; line-height: 1.02; letter-spacing: -.028em; text-wrap: balance; margin: 0; }
-.nameplate .role, .identity .role { font-weight: 700; font-size: 15px; color: var(--gold-l); margin-top: 8px; }
-.nameplate .meta, .identity .meta { font-size: 9.5px; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; color: var(--mute); margin-top: 8px; }
+.nameplate .name, .identity .name { font-size: 30px; font-weight: 900; line-height: 1.02; letter-spacing: -.028em; text-wrap: balance; margin: 0; }
+.nameplate .role, .identity .role { font-weight: 700; font-size: 14.5px; color: var(--gold-l); margin-top: 8px; }
+.nameplate .meta, .identity .meta { font-size: 9.5px; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; color: var(--mute); margin-top: 9px; }
 
 /* ---------- actions ---------- */
-.actions { padding: 18px 20px 4px; display: flex; flex-direction: column; gap: 9px; }
+.actions { padding: 20px 22px 6px; display: flex; flex-direction: column; gap: 11px; }
 .btn {
   appearance: none; cursor: pointer; text-decoration: none;
   font-family: inherit; border-radius: 2px; border: 1px solid transparent;
@@ -108,12 +131,13 @@ body { min-height: 100dvh; }
 .btn:focus-visible { outline: 2px solid var(--gold-l); outline-offset: 2px; }
 .btn-save {
   background: var(--red); color: #FFF4EF; font-size: 14.5px; font-weight: 900;
-  letter-spacing: .04em; padding: 15px 16px; text-transform: uppercase;
+  letter-spacing: .04em; padding: 16px; text-transform: uppercase;
 }
 .btn-save:hover { background: #C7272B; }
 .btn-trio { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; }
 .btn-min {
-  background: transparent; border-color: var(--hair); color: var(--paper);
+  /* solid ground, so the emboss stops at the button edge */
+  background: var(--bg); border-color: var(--hair); color: var(--paper);
   flex-direction: column; gap: 6px; padding: 11px 6px 10px;
   font-size: 9.5px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase;
 }
@@ -121,10 +145,10 @@ body { min-height: 100dvh; }
 .btn-min svg { width: 17px; height: 17px; display: block; }
 
 /* ---------- record ---------- */
-.record { margin-top: 16px; border-top: 1px solid var(--hair); }
+.record { margin-top: 20px; border-top: 1px solid var(--hair); }
 .record .row {
   display: grid; grid-template-columns: 72px 1fr; gap: 12px; align-items: baseline;
-  padding: 11px 20px; border-bottom: 1px solid var(--hair); font-size: 13px;
+  padding: 13px 22px; border-bottom: 1px solid var(--hair); font-size: 13px;
 }
 .record .k { font-size: 9px; font-weight: 900; letter-spacing: .15em; text-transform: uppercase; color: var(--gold-d); }
 .record .v { word-break: break-word; font-variant-numeric: tabular-nums; }
@@ -195,7 +219,7 @@ body { min-height: 100dvh; }
 
 /* ---------- about ---------- */
 .about {
-  padding: 20px 22px; display: flex; flex-direction: column;
+  padding: 26px 24px; display: flex; flex-direction: column;
   align-items: center; text-align: center; gap: 9px;
 }
 .about-label {
