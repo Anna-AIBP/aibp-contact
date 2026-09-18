@@ -16,21 +16,31 @@ const FONTS = [
   { name: 'Lato', data: LATO_900, weight: 900, style: 'normal' },
 ];
 
-// Satori cannot fetch a remote image itself, so the headshot is inlined. It
-// gets a hard timeout and a null return on any failure: Google Photos share
-// links often refuse a server-side fetch, and a host that hangs rather than
-// refusing would otherwise hold the whole render open. A missing photo drops
-// the card to the lockup and the name, which is a worse preview but a real one.
+// The headshot is inlined so we control the format and the timeout.
+//
+// Format matters more than it looks: Satori decodes PNG, JPEG and GIF, and
+// nothing else. Squarespace content-negotiates and will happily serve WebP,
+// which sails past an `image/*` check and then throws deep inside the
+// renderer — and because ImageResponse streams, that throw lands after the
+// response has begun, so no try/catch around it can save the card. Hence an
+// explicit Accept header asking for PNG or JPEG, and a strict allowlist on
+// the way back. Anything else is treated as no photo at all.
+//
+// The timeout is for the other failure mode: Google Photos share links often
+// refuse a server-side fetch, and a host that hangs rather than refusing
+// would hold the render open. A missing photo drops the card to the lockup
+// and the name — a plainer preview, but a real one.
 async function headshot(url) {
   if (!url) return null;
   try {
     const res = await fetch(url, {
+      headers: { accept: 'image/png,image/jpeg' },
       next: { revalidate: 3600 },
       signal: AbortSignal.timeout(4000),
     });
     if (!res.ok) return null;
-    const type = res.headers.get('content-type') || '';
-    if (!type.startsWith('image/')) return null;
+    const type = (res.headers.get('content-type') || '').split(';')[0].trim();
+    if (!/^image\/(png|jpeg|jpg|gif)$/.test(type)) return null;
     const b64 = Buffer.from(await res.arrayBuffer()).toString('base64');
     return `data:${type};base64,${b64}`;
   } catch {
